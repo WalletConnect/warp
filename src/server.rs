@@ -77,6 +77,8 @@ macro_rules! bind_inner {
         let service = into_service!($this.filter);
         let (addr, incoming) = addr_incoming!($addr);
         let srv = HyperServer::builder(incoming)
+            .http1_only(true)
+            .http1_header_read_timeout(std::time::Duration::from_secs(30))
             .http1_pipeline_flush($this.pipeline)
             .serve(service);
         Ok::<_, hyper::Error>((addr, srv))
